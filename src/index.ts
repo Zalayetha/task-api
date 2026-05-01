@@ -3,9 +3,7 @@ import { Hono } from "hono";
 import { authRouter } from "./modules/auth/router.js";
 import { taskRouter } from "./modules/tasks/router.js";
 
-const app = new Hono()
-	.route("/tasks", taskRouter)
-	.route("/auth/register", authRouter);
+const app = new Hono().route("/tasks", taskRouter).route("/auth", authRouter);
 serve(
 	{
 		fetch: app.fetch,
