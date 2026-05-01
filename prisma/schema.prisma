@@ -12,15 +12,33 @@ datasource db {
   provider = "sqlite"
 }
 
+model Admin{
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  password String
+}
+model User{
+  id Int @id @default(autoincrement())
+  name String
+  phoneNumber String
+  createdAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks Tasks[]
+}
 model Tasks{
   id Int @id @default(autoincrement())
   title String
   description String
-  assignee String
   priority String
   status String
   startDate DateTime
   dueDate DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }
+
