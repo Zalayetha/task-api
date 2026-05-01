@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../../utils/prisma.js";
 import { LoginAdminSchema, RegisterAdminSchema } from "./schema.js";
 import { hashPassword, isPasswordValid } from "./utils.js";
-import "dotenv/config";
 export const authRouter = new Hono()
 	.post("/register", zValidator("json", RegisterAdminSchema), async (c) => {
 		const { name, email, password } = c.req.valid("json");
@@ -54,7 +53,6 @@ export const authRouter = new Hono()
 		}
 		// Check if password is correct
 		const isValid = await isPasswordValid(password, user.password);
-
 		if (!isValid) {
 			return c.json(
 				{
@@ -63,23 +61,19 @@ export const authRouter = new Hono()
 				401,
 			);
 		}
-
 		// Authorization
 		const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 		const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-
 		if (!accessTokenSecret || !refreshTokenSecret) {
 			throw new Error(
 				"ACCESS_TOKEN_SECRET or REFRESH_TOKEN_SECRET is not defined",
 			);
 		}
-
 		const accessToken = jwt.sign({ sub: user.id }, accessTokenSecret, {
 			expiresIn: "15m",
 		});
 		const refreshToken = jwt.sign({ sub: user.id }, refreshTokenSecret, {
 			expiresIn: "7d",
 		});
-
 		return c.json({ accessToken, refreshToken });
 	});
