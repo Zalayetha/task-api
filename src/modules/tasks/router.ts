@@ -1,6 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { id } from "zod/locales";
 import { prisma } from "../../utils/prisma.js";
 import { changeStatusSchema, taskSchema } from "./schema.js";
 export const taskRouter = new Hono()
@@ -41,7 +40,7 @@ export const taskRouter = new Hono()
 			data: {
 				title: body.title,
 				description: body.description,
-				assignee: body.assignee,
+				userId: body.userId,
 				priority: body.priority,
 				status: body.status,
 				startDate: body.startDate,
@@ -75,7 +74,7 @@ export const taskRouter = new Hono()
 			data: {
 				title: body.title,
 				description: body.description,
-				assignee: body.assignee,
+				userId: body.userId,
 				priority: body.priority,
 				status: body.status,
 				startDate: body.startDate,

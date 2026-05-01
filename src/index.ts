@@ -1,8 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { authRouter } from "./modules/auth/router.js";
 import { taskRouter } from "./modules/tasks/router.js";
 
-const app = new Hono().route("/tasks", taskRouter);
+const app = new Hono()
+	.route("/tasks", taskRouter)
+	.route("/auth/register", authRouter);
 serve(
 	{
 		fetch: app.fetch,

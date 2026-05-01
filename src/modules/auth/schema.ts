@@ -1,5 +1,7 @@
-import z, { email } from "zod";
+import z from "zod";
 
 export const CreateAdminSchema = z.object({
-	email,
+	email: z.email(),
+	name: z.string().min(1),
+	password: z.string().min(8),
 });
