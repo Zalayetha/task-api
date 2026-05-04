@@ -108,7 +108,7 @@ export const taskRouter = new Hono()
     return c.json({ message: "Successfully delete task" });
   })
 
-  //   To set status to done
+  //   To set status to in progress
   .post("/:id/start", async (c) => {
     const token = c.req.header("token");
     if (!token) {
