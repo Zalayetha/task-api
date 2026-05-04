@@ -1,8 +1,7 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { prisma } from "../../utils/prisma.js";
 import { changeStatusSchema, taskSchema } from "./schema.js";
-import { zValidator } from "@hono/zod-validator";
-import { id } from "zod/locales";
 export const taskRouter = new Hono()
 
   // To get all the task
@@ -109,34 +108,109 @@ export const taskRouter = new Hono()
     return c.json({ message: "Successfully delete task" });
   })
 
-  //   To change status task
-  .post(
-    "/:id/change-status",
-    zValidator("json", changeStatusSchema),
-    async (c) => {
-      const token = c.req.header("token");
-      if (!token) {
-        return c.json({ error: "Unauthorized" }, 401);
-      }
-      const body = c.req.valid("json");
-      const id = c.req.param("id");
-      const task = await prisma.tasks.findUnique({
-        where: {
-          id: Number(id),
-        },
-      });
+  //   To set status to done
+  .post("/:id/start", async (c) => {
+    const token = c.req.header("token");
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
 
-      if (!task) {
-        return c.json({ message: "Failed change status [Task Not Found]" });
-      }
-      const newTask = await prisma.tasks.update({
-        where: {
-          id: Number(id),
-        },
-        data: {
-          status: body.status,
-        },
-      });
-      return c.json(newTask, 201);
-    },
-  );
+    const id = c.req.param("id");
+    const task = await prisma.tasks.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!task) {
+      return c.json({ message: "Failed change status [Task Not Found]" });
+    }
+    const newTask = await prisma.tasks.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: "in_progress",
+      },
+    });
+    return c.json(newTask, 201);
+  })
+
+  // To set status to in_review
+  .post("/:id/submit", async (c) => {
+    const token = c.req.header("token");
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const id = c.req.param("id");
+    const task = await prisma.tasks.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!task) {
+      return c.json({ message: "Failed change status [Task Not Found]" });
+    }
+    const newTask = await prisma.tasks.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: "in_review",
+      },
+    });
+    return c.json(newTask, 201);
+  })
+  // To set status to done
+  .post("/:id/complete", async (c) => {
+    const token = c.req.header("token");
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const id = c.req.param("id");
+    const task = await prisma.tasks.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!task) {
+      return c.json({ message: "Failed change status [Task Not Found]" });
+    }
+    const newTask = await prisma.tasks.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: "done",
+      },
+    });
+    return c.json(newTask, 201);
+  })
+  // To set status to todo
+  .post("/:id/reopen", async (c) => {
+    const token = c.req.header("token");
+    if (!token) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const id = c.req.param("id");
+    const task = await prisma.tasks.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!task) {
+      return c.json({ message: "Failed change status [Task Not Found]" });
+    }
+    const newTask = await prisma.tasks.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: "todo",
+      },
+    });
+    return c.json(newTask, 201);
+  });
