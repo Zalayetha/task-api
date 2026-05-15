@@ -9,6 +9,15 @@ pnpm prisma generate
 pnpm dev
 ```
 
+## Local
 ```
 open http://localhost:3000
+```
+
+## Public
+Already setup Domain, Nginx, Certbot
+```
+IP: 103.187.147.174
+PORT: 3000
+Domain: https://batch-12-api.zalsoft.com/
 ```
